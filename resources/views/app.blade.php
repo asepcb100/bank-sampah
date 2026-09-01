@@ -56,7 +56,8 @@
         </style>
 
         <link rel="icon" href="/favicon.ico" sizes="any">
-        <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+        <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png">
+        <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png">
 
         <!-- PWA -->
         <link rel="manifest" href="/manifest.webmanifest">
@@ -65,7 +66,7 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
         <meta name="apple-mobile-web-app-title" content="Bumi Lestari">
-        <link rel="apple-touch-icon" href="/icon-192x192.png">
+        <link rel="apple-touch-icon" href="/favicon-180x180.png">
 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,300..900;1,300..900&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,500&display=swap" rel="stylesheet" />
