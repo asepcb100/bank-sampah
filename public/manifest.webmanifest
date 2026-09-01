@@ -1,0 +1,49 @@
+{
+  "name": "Bank Sampah Bumi Indramayu Lestari",
+  "short_name": "Bumi Lestari",
+  "description": "Bank Sampah Bumi Indramayu Lestari — solusi pengelolaan sampah berkelanjutan untuk lingkungan yang lebih bersih dan sehat di Kabupaten Indramayu.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f6f1e2",
+  "theme_color": "#2c3821",
+  "categories": ["environment", "lifestyle", "shopping", "productivity"],
+  "lang": "id",
+  "icons": [
+    {
+      "src": "/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Katalog Produk",
+      "short_name": "Katalog",
+      "description": "Lihat katalog produk Bank Sampah Bumi Indramayu Lestari",
+      "url": "/katalog",
+      "icons": [{ "src": "/icon-192x192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Galeri Kegiatan",
+      "short_name": "Galeri",
+      "description": "Lihat dokumentasi kegiatan komunitas",
+      "url": "/galeri",
+      "icons": [{ "src": "/icon-192x192.png", "sizes": "192x192" }]
+    }
+  ]
+}
