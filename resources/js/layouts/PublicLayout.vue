@@ -35,12 +35,9 @@ function isActive(itemMatch: string) {
                     <!-- Brand Logo -->
                     <Link href="/" class="flex items-center gap-3 group focus:outline-none">
                         <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-white p-0.5 flex items-center justify-center shadow-md border border-[#2b2417]/16 shrink-0 group-hover:scale-105 transition-transform overflow-hidden">
-                            <img src="/img/logo.png" alt="Logo Bank Sampah" class="w-full h-full object-contain" />
+                            <img src="/img/logo.png" alt="Logo Bumi Indramayu Lestari" class="w-full h-full object-contain" />
                         </div>
                         <div class="flex flex-col justify-center text-left">
-                            <span class="text-[#c1852c] font-black text-[10px] sm:text-xs tracking-wider uppercase leading-tight">
-                                BANK SAMPAH
-                            </span>
                             <span class="font-bold text-sm sm:text-base text-[#2c3821] tracking-tight group-hover:text-[#c1852c] transition-colors leading-tight">
                                 Bumi Indramayu Lestari
                             </span>

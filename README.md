@@ -221,6 +221,29 @@ bumil-landing-contoh.html          # Referensi desain awal
 | `composer types:check` | Analisis tipe (PHPStan) |
 | `npm run types:check` | Cek tipe (vue-tsc) |
 | `composer test` | Jalankan test (Pest) |
+| `php artisan app:generate-icons` | Generate ulang PWA icons & favicons dari `logo.png` |
+
+### 🖼️ Update Logo & PWA Icons
+
+Saat logo utama (`public/img/logo.png`) berubah, jalankan:
+
+```bash
+php artisan app:generate-icons
+```
+
+Command ini akan generate **7 file** secara otomatis:
+
+| File | Kegunaan |
+|------|----------|
+| `icon-192x192.png` | PWA icon (home screen) |
+| `icon-512x512.png` | PWA icon (splash screen) |
+| `apple-touch-icon.png` | Apple touch icon |
+| `favicon-180x180.png` | Apple touch icon (fallback) |
+| `favicon-32x32.png` | Favicon browser |
+| `favicon-16x16.png` | Favicon browser |
+| `favicon.ico` | Multi-size ICO (16, 32, 48) |
+
+Custom source: `php artisan app:generate-icons --source=path/to/custom-logo.png`
 
 ---
 
