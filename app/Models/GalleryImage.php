@@ -15,10 +15,12 @@ class GalleryImage extends Model
         'image_url',
         'caption',
         'sort_order',
+        'is_primary',
     ];
 
     protected $casts = [
         'sort_order' => 'integer',
+        'is_primary' => 'boolean',
     ];
 
     public function gallery(): BelongsTo

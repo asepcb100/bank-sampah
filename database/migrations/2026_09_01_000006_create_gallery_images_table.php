@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('gallery_id')->constrained('galleries')->cascadeOnDelete();
             $table->string('image_url');
+            $table->boolean('is_primary')->default(false);
             $table->string('caption')->nullable();
             $table->integer('sort_order')->default(0);
             $table->timestamps();

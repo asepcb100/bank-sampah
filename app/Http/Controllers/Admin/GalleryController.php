@@ -8,17 +8,31 @@ use App\Models\Gallery;
 use App\Models\GalleryImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Inertia\Inertia;
 
 class GalleryController extends Controller
 {
     /**
      * Display a listing of the galleries.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Inertia::render('admin/Galeri', [
-            'galleries' => Gallery::with(['category', 'images'])->latest()->get(),
+        $query = Gallery::with(['category', 'images']);
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('location', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->input('category_id'));
+        }
+
+        return view('admin.galeri.index', [
+            'galleries' => $query->latest()->paginate(10)->withQueryString(),
             'categories' => Category::where('type', 'galeri')->orWhere('type', 'semua')->get(),
         ]);
     }
@@ -28,7 +42,7 @@ class GalleryController extends Controller
      */
     public function create()
     {
-        return Inertia::render('admin/galeri/Create', [
+        return view('admin.galeri.create', [
             'categories' => Category::where('type', 'galeri')->orWhere('type', 'semua')->get(),
         ]);
     }
@@ -45,8 +59,8 @@ class GalleryController extends Controller
             'event_date' => 'required|date',
             'description' => 'nullable|string',
             'is_published' => 'nullable',
-            'image_url' => 'nullable|string',
             'photos' => 'nullable|array',
+            'photos.*' => 'nullable|file|image|max:5120',
         ]);
 
         // Generate Unique Slug
@@ -58,13 +72,6 @@ class GalleryController extends Controller
             $count++;
         }
 
-        $defaultImage = 'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?q=80&w=800&auto=format&fit=crop';
-        $primaryImageUrl = $validated['image_url'] ?? $defaultImage;
-
-        if (str_starts_with($primaryImageUrl, 'blob:')) {
-            $primaryImageUrl = $defaultImage;
-        }
-
         $gallery = Gallery::create([
             'title' => $validated['title'],
             'slug' => $slug,
@@ -72,26 +79,23 @@ class GalleryController extends Controller
             'location' => $validated['location'],
             'event_date' => $validated['event_date'],
             'description' => $validated['description'] ?? null,
-            'image_url' => $primaryImageUrl,
             'is_published' => filter_var($request->is_published ?? true, FILTER_VALIDATE_BOOLEAN),
         ]);
 
-        // Handle Photos & File Uploads
-        if ($request->has('photos') && is_array($request->photos)) {
-            foreach ($request->photos as $idx => $photoData) {
-                $photoUrl = $photoData['url'] ?? null;
-                $isPrimary = filter_var($photoData['is_primary'] ?? false, FILTER_VALIDATE_BOOLEAN) || ($idx === 0);
+        // Handle Photos & File Uploads into GalleryImage table
+        $photos = $request->file('photos', []);
+        $primaryIndex = (int) $request->input('primary_upload_index', 0);
+        if ($primaryIndex < 0) $primaryIndex = 0;
 
-                if (isset($photoData['file']) && $request->hasFile("photos.{$idx}.file")) {
-                    $path = $request->file("photos.{$idx}.file")->store('galleries', 'public');
-                    $photoUrl = '/storage/' . $path;
-                } elseif (!$photoUrl || str_starts_with($photoUrl, 'blob:')) {
-                    $photoUrl = $defaultImage;
+        if (is_array($photos) && count($photos) > 0) {
+            foreach ($photos as $idx => $file) {
+                if (!$file || !is_object($file) || method_exists($file, 'isValid') && !$file->isValid()) {
+                    continue;
                 }
 
-                if ($isPrimary) {
-                    $gallery->update(['image_url' => $photoUrl]);
-                }
+                $path = $file->store('galleries', 'public');
+                $photoUrl = '/storage/' . $path;
+                $isPrimary = ($idx === $primaryIndex);
 
                 GalleryImage::create([
                     'gallery_id' => $gallery->id,
@@ -99,13 +103,6 @@ class GalleryController extends Controller
                     'is_primary' => $isPrimary,
                 ]);
             }
-        } else {
-            // Default primary image record
-            GalleryImage::create([
-                'gallery_id' => $gallery->id,
-                'image_url' => $gallery->image_url,
-                'is_primary' => true,
-            ]);
         }
 
         return redirect()->route('admin.galeri')->with('success', 'Kegiatan galeri berhasil ditambahkan!');
@@ -118,7 +115,7 @@ class GalleryController extends Controller
     {
         $gallery = Gallery::with(['category', 'images'])->findOrFail($id);
 
-        return Inertia::render('admin/galeri/Show', [
+        return view('admin.galeri.show', [
             'gallery' => $gallery,
         ]);
     }
@@ -130,7 +127,7 @@ class GalleryController extends Controller
     {
         $gallery = Gallery::with(['category', 'images'])->findOrFail($id);
 
-        return Inertia::render('admin/galeri/Edit', [
+        return view('admin.galeri.edit', [
             'gallery' => $gallery,
             'categories' => Category::where('type', 'galeri')->orWhere('type', 'semua')->get(),
         ]);
@@ -150,8 +147,8 @@ class GalleryController extends Controller
             'event_date' => 'required|date',
             'description' => 'nullable|string',
             'is_published' => 'nullable',
-            'image_url' => 'nullable|string',
             'photos' => 'nullable|array',
+            'photos.*' => 'nullable|file|image|max:5120',
         ]);
 
         // Slug Update
@@ -166,12 +163,6 @@ class GalleryController extends Controller
             }
         }
 
-        $defaultImage = $gallery->image_url;
-        $primaryImageUrl = $validated['image_url'] ?? $defaultImage;
-        if (str_starts_with($primaryImageUrl, 'blob:')) {
-            $primaryImageUrl = $defaultImage;
-        }
-
         $gallery->update([
             'title' => $validated['title'],
             'slug' => $slug,
@@ -179,28 +170,39 @@ class GalleryController extends Controller
             'location' => $validated['location'],
             'event_date' => $validated['event_date'],
             'description' => $validated['description'] ?? null,
-            'image_url' => $primaryImageUrl,
             'is_published' => filter_var($request->is_published ?? true, FILTER_VALIDATE_BOOLEAN),
         ]);
 
-        // Update gallery images if photos are provided
-        if ($request->has('photos') && is_array($request->photos)) {
-            // Remove old images
-            $gallery->images()->delete();
+        // Handle removing specific existing images requested by user
+        if ($request->has('remove_images') && is_array($request->remove_images)) {
+            GalleryImage::whereIn('id', $request->remove_images)->where('gallery_id', $gallery->id)->delete();
+        }
 
-            foreach ($request->photos as $idx => $photoData) {
-                $photoUrl = $photoData['url'] ?? null;
-                $isPrimary = filter_var($photoData['is_primary'] ?? false, FILTER_VALIDATE_BOOLEAN) || ($idx === 0);
+        // Handle setting specific existing image as primary
+        if ($request->filled('set_primary_image_id')) {
+            $primaryImg = GalleryImage::where('gallery_id', $gallery->id)->where('id', $request->set_primary_image_id)->first();
+            if ($primaryImg) {
+                GalleryImage::where('gallery_id', $gallery->id)->update(['is_primary' => false]);
+                $primaryImg->update(['is_primary' => true]);
+            }
+        }
 
-                if (isset($photoData['file']) && $request->hasFile("photos.{$idx}.file")) {
-                    $path = $request->file("photos.{$idx}.file")->store('galleries', 'public');
-                    $photoUrl = '/storage/' . $path;
-                } elseif (!$photoUrl || str_starts_with($photoUrl, 'blob:')) {
-                    $photoUrl = $defaultImage;
+        // Append new uploaded photos
+        $photos = $request->file('photos', []);
+        $primaryUploadIndex = $request->has('primary_upload_index') ? (int) $request->input('primary_upload_index') : -1;
+
+        if (is_array($photos) && count($photos) > 0) {
+            foreach ($photos as $idx => $file) {
+                if (!$file || !is_object($file) || method_exists($file, 'isValid') && !$file->isValid()) {
+                    continue;
                 }
 
+                $path = $file->store('galleries', 'public');
+                $photoUrl = '/storage/' . $path;
+                $isPrimary = ($idx === $primaryUploadIndex);
+
                 if ($isPrimary) {
-                    $gallery->update(['image_url' => $photoUrl]);
+                    GalleryImage::where('gallery_id', $gallery->id)->update(['is_primary' => false]);
                 }
 
                 GalleryImage::create([
@@ -208,6 +210,14 @@ class GalleryController extends Controller
                     'image_url' => $photoUrl,
                     'is_primary' => $isPrimary,
                 ]);
+            }
+        }
+
+        // Ensure at least 1 image is primary if images exist
+        if ($gallery->images()->count() > 0 && !$gallery->images()->where('is_primary', true)->exists()) {
+            $firstImg = $gallery->images()->first();
+            if ($firstImg) {
+                $firstImg->update(['is_primary' => true]);
             }
         }
 

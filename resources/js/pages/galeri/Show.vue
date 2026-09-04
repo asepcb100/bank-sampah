@@ -40,11 +40,23 @@ const props = defineProps<{
     related?: GalleryItem[];
 }>();
 
-const galleryImages = computed(() => {
-    if (props.gallery.images && props.gallery.images.length > 0) {
-        return props.gallery.images.map(img => img.image_url);
+function formatImageUrl(url: string | null | undefined, fallback: string): string {
+    if (!url) return fallback;
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:') || url.startsWith('blob:')) {
+        return url;
     }
-    return [props.gallery.image_url || 'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?q=80&w=800&auto=format&fit=crop'];
+    if (!url.startsWith('/')) {
+        return '/' + url;
+    }
+    return url;
+}
+
+const galleryImages = computed(() => {
+    const fallback = 'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?q=80&w=800&auto=format&fit=crop';
+    if (props.gallery.images && props.gallery.images.length > 0) {
+        return props.gallery.images.map(img => formatImageUrl(img.image_url, fallback));
+    }
+    return [formatImageUrl(props.gallery.image_url, fallback)];
 });
 
 const activeImageIndex = ref(0);

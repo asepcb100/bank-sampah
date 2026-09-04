@@ -86,6 +86,27 @@ const availableCategories = computed(() => {
     return categoryList.value;
 });
 
+function formatImageUrl(url: string | null | undefined): string {
+    const fallback = 'https://images.unsplash.com/photo-1607006482602-765180037159?q=80&w=800&auto=format&fit=crop';
+    if (!url) return fallback;
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:') || url.startsWith('blob:')) {
+        return url;
+    }
+    if (!url.startsWith('/')) {
+        return '/' + url;
+    }
+    return url;
+}
+
+function getProductImage(item: ProductItem): string {
+    if (item.images && item.images.length > 0) {
+        const primary = item.images.find(img => img.is_primary);
+        if (primary && primary.image_url) return formatImageUrl(primary.image_url);
+        if (item.images[0]?.image_url) return formatImageUrl(item.images[0].image_url);
+    }
+    return formatImageUrl(item.image_url);
+}
+
 function saveCategoryItem() {
     if (!categoryForm.name.trim()) return;
 
@@ -303,7 +324,7 @@ function deleteItem() {
                         <tr v-for="item in filteredProducts" :key="item.id" class="hover:bg-slate-50/80 transition-colors">
                             <td class="py-3 px-4">
                                 <div class="w-12 h-12 rounded-lg bg-slate-100 overflow-hidden border border-slate-200">
-                                    <img :src="item.image_url" :alt="item.title" class="w-full h-full object-cover" />
+                                    <img :src="getProductImage(item)" :alt="item.title" class="w-full h-full object-cover" />
                                 </div>
                             </td>
                             <td class="py-3 px-4 font-semibold text-slate-800 max-w-xs">

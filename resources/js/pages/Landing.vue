@@ -21,7 +21,14 @@ import {
     Leaf,
     FileText,
     ChevronRight,
-    X
+    X,
+    Award,
+    Briefcase,
+    GraduationCap,
+    HeartHandshake,
+    BookOpen,
+    UserCheck,
+    Layers
 } from '@lucide/vue';
 
 interface CategoryItem {
@@ -79,13 +86,24 @@ const selectedLightboxItem = ref<GalleryItem | null>(null);
 // Hero Gallery Showcase Carousel Index
 const heroCarouselIdx = ref(0);
 
+function formatImageUrl(url: string | null | undefined, fallback: string): string {
+    if (!url) return fallback;
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:') || url.startsWith('blob:')) {
+        return url;
+    }
+    if (!url.startsWith('/')) {
+        return '/' + url;
+    }
+    return url;
+}
+
 function getPrimaryImage(item: any, fallbackUrl: string): string {
     if (item?.images && item.images.length > 0) {
         const primary = item.images.find((img: any) => img.is_primary);
-        if (primary && primary.image_url) return primary.image_url;
-        return item.images[0].image_url;
+        if (primary && primary.image_url) return formatImageUrl(primary.image_url, fallbackUrl);
+        if (item.images[0]?.image_url) return formatImageUrl(item.images[0].image_url, fallbackUrl);
     }
-    return item?.image_url || fallbackUrl;
+    return formatImageUrl(item?.image_url, fallbackUrl);
 }
 
 // Fallback dataset if database empty
@@ -470,6 +488,440 @@ function closeLightbox() {
                         <p class="text-xs text-[#54493a] leading-relaxed">Pemberdayaan ekonomi lewat Bank Sampah, sedekah jelantah, dan kerajinan kreatif produk olahan.</p>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- STRUKTUR ORGANISASI -->
+        <section class="py-20 bg-[#f6f1e2]" id="struktur">
+            <div class="max-w-[1180px] mx-auto px-6 sm:px-8">
+                <div class="max-w-[62ch] mb-12">
+                    <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#2c3821] text-[#fbf8ef] text-xs font-bold uppercase tracking-wider mb-3">
+                        <UserCheck class="w-3.5 h-3.5 text-[#dce6c8]" />
+                        <span>Pengurus & Tim Komunitas</span>
+                    </div>
+                    <h2 class="font-fraunces font-bold text-[#2c3821] text-3xl sm:text-4xl leading-[1.08]">
+                        Struktur Organisasi
+                    </h2>
+                    <p class="text-[#5a5040] mt-3 text-sm sm:text-base leading-relaxed">
+                        Pengurus dan tim penggerak komunitas Bumi Indramayu Lestari yang berdedikasi menjaga keberlanjutan dan mendampingi warga Indramayu.
+                    </p>
+                </div>
+
+                <!-- Jajaran Pengurus Utama Grid -->
+                <div class="mb-14">
+                    <h3 class="text-xs uppercase font-bold text-[#c1852c] tracking-widest mb-6 flex items-center gap-2">
+                        <Award class="w-4 h-4 text-[#c1852c]" />
+                        <span>Pengurus Inti Komunitas</span>
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                        
+                        <!-- Card 1: Pembina -->
+                        <div class="bg-[#fbf8ef] rounded-2xl p-5 border border-[#2b2417]/14 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group">
+                            <div class="space-y-3">
+                                <div class="w-14 h-14 rounded-2xl bg-[#dce6c8] text-[#2c3821] flex items-center justify-center font-bold font-fraunces text-xl group-hover:scale-105 transition-transform shadow-xs">
+                                    ST
+                                </div>
+                                <div>
+                                    <span class="inline-block text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#2c3821] text-[#fbf8ef] mb-1">
+                                        Pembina / Penasihat
+                                    </span>
+                                    <h4 class="font-fraunces font-bold text-base text-[#2c3821] group-hover:text-[#c1852c] transition-colors">
+                                        Sutrisno, S.P.
+                                    </h4>
+                                    <p class="text-xs text-[#6b6150] mt-1 leading-relaxed">
+                                        Pegiat Lingkungan & Tokoh Masyarakat Indramayu. Pengarah visi strategis komunitas.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Ketua -->
+                        <div class="bg-[#fbf8ef] rounded-2xl p-5 border border-[#2b2417]/14 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group">
+                            <div class="space-y-3">
+                                <div class="w-14 h-14 rounded-2xl bg-[#4c5c31] text-white flex items-center justify-center font-bold font-fraunces text-xl group-hover:scale-105 transition-transform shadow-xs">
+                                    AF
+                                </div>
+                                <div>
+                                    <span class="inline-block text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#c1852c] text-white mb-1">
+                                        Ketua Komunitas
+                                    </span>
+                                    <h4 class="font-fraunces font-bold text-base text-[#2c3821] group-hover:text-[#c1852c] transition-colors">
+                                        Ahmad Fauzi, S.Ling.
+                                    </h4>
+                                    <p class="text-xs text-[#6b6150] mt-1 leading-relaxed">
+                                        Koordinator utama pelaksanaan program kerja, riset lingkungan, dan pendampingan warga.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: Sekretaris -->
+                        <div class="bg-[#fbf8ef] rounded-2xl p-5 border border-[#2b2417]/14 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group">
+                            <div class="space-y-3">
+                                <div class="w-14 h-14 rounded-2xl bg-[#dce6c8] text-[#2c3821] flex items-center justify-center font-bold font-fraunces text-xl group-hover:scale-105 transition-transform shadow-xs">
+                                    SN
+                                </div>
+                                <div>
+                                    <span class="inline-block text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#2c3821] text-[#fbf8ef] mb-1">
+                                        Sekretaris & Admin
+                                    </span>
+                                    <h4 class="font-fraunces font-bold text-base text-[#2c3821] group-hover:text-[#c1852c] transition-colors">
+                                        Siti Nurhaliza, S.Pd.
+                                    </h4>
+                                    <p class="text-xs text-[#6b6150] mt-1 leading-relaxed">
+                                        Pengelola administrasi, dokumentasi, arsip program, serta alur komunikasi publik.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 4: Bendahara -->
+                        <div class="bg-[#fbf8ef] rounded-2xl p-5 border border-[#2b2417]/14 shadow-2xs hover:shadow-md transition-all duration-300 flex flex-col justify-between group">
+                            <div class="space-y-3">
+                                <div class="w-14 h-14 rounded-2xl bg-[#dce6c8] text-[#2c3821] flex items-center justify-center font-bold font-fraunces text-xl group-hover:scale-105 transition-transform shadow-xs">
+                                    BS
+                                </div>
+                                <div>
+                                    <span class="inline-block text-[10px] font-bold uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-[#2c3821] text-[#fbf8ef] mb-1">
+                                        Bendahara & Operasional
+                                    </span>
+                                    <h4 class="font-fraunces font-bold text-base text-[#2c3821] group-hover:text-[#c1852c] transition-colors">
+                                        Budi Santoso
+                                    </h4>
+                                    <p class="text-xs text-[#6b6150] mt-1 leading-relaxed">
+                                        Manajemen keuangan kas komunitas, logistik timbang bank sampah, dan kemitraan pengepul.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Divisi & Bidang Kerja Grid -->
+                <div>
+                    <h3 class="text-xs uppercase font-bold text-[#c1852c] tracking-widest mb-6 flex items-center gap-2">
+                        <Layers class="w-4 h-4 text-[#c1852c]" />
+                        <span>Divisi Tim Penggerak Lapangan</span>
+                    </h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        
+                        <!-- Divisi 1: Edukasi -->
+                        <div class="bg-white p-6 rounded-2xl border border-[#2b2417]/14 shadow-2xs hover:shadow-lg transition-all duration-300">
+                            <div class="w-10 h-10 rounded-xl bg-[#dce6c8] text-[#2c3821] flex items-center justify-center mb-4">
+                                <GraduationCap class="w-5 h-5" />
+                            </div>
+                            <h4 class="font-fraunces font-bold text-lg text-[#2c3821] mb-1.5">
+                                Divisi Edukasi & Pelatihan
+                            </h4>
+                            <p class="text-xs text-[#6b6150] leading-relaxed mb-4">
+                                Menyusun kurikulum sosialisasi 3R, edukasi pemilahan sampah di RT/RW dan sekolah, serta menyelenggarakan workshop daur ulang ramah lingkungan.
+                            </p>
+                            <div class="text-[11px] font-semibold text-[#4c5c31] bg-[#dce6c8]/50 px-3 py-1.5 rounded-lg border border-[#c6d6ab]">
+                                Focus: Edukasi Warga & Kampanye Zero-Waste
+                            </div>
+                        </div>
+
+                        <!-- Divisi 2: Bank Sampah & Ekonomi -->
+                        <div class="bg-white p-6 rounded-2xl border border-[#2b2417]/14 shadow-2xs hover:shadow-lg transition-all duration-300">
+                            <div class="w-10 h-10 rounded-xl bg-[#dce6c8] text-[#2c3821] flex items-center justify-center mb-4">
+                                <Recycle class="w-5 h-5" />
+                            </div>
+                            <h4 class="font-fraunces font-bold text-lg text-[#2c3821] mb-1.5">
+                                Divisi Bank Sampah & Ekonomi
+                            </h4>
+                            <p class="text-xs text-[#6b6150] leading-relaxed mb-4">
+                                Mengelola alur penerimaan sedekah sampah anorganik, penimbangan bulanan, pengolahan minyak jelantah, serta pembuatan pupuk organik.
+                            </p>
+                            <div class="text-[11px] font-semibold text-[#4c5c31] bg-[#dce6c8]/50 px-3 py-1.5 rounded-lg border border-[#c6d6ab]">
+                                Focus: Bank Sampah & Ekonomi Sirkular
+                            </div>
+                        </div>
+
+                        <!-- Divisi 3: Humas & Kemitraan -->
+                        <div class="bg-white p-6 rounded-2xl border border-[#2b2417]/14 shadow-2xs hover:shadow-lg transition-all duration-300">
+                            <div class="w-10 h-10 rounded-xl bg-[#dce6c8] text-[#2c3821] flex items-center justify-center mb-4">
+                                <HeartHandshake class="w-5 h-5" />
+                            </div>
+                            <h4 class="font-fraunces font-bold text-lg text-[#2c3821] mb-1.5">
+                                Divisi Humas & Kemitraan
+                            </h4>
+                            <p class="text-xs text-[#6b6150] leading-relaxed mb-4">
+                                Membangun jaringan kolaborasi dengan pemerintah desa, instansi daerah, perguruan tinggi/mahasiswa KKN, serta komunitas lingkungan sekitar.
+                            </p>
+                            <div class="text-[11px] font-semibold text-[#4c5c31] bg-[#dce6c8]/50 px-3 py-1.5 rounded-lg border border-[#c6d6ab]">
+                                Focus: Kemitraan Desa & Mahasiswa KKN
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- PROGRAM KERJA UTAMA -->
+        <section class="py-20 bg-[#fbf8ef] border-y border-[#2b2417]/16" id="program-kerja">
+            <div class="max-w-[1180px] mx-auto px-6 sm:px-8">
+                
+                <div class="flex flex-col lg:flex-row lg:items-end justify-between mb-10 gap-6">
+                    <div class="max-w-[60ch]">
+                        <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#c1852c] text-[#fbf8ef] text-xs font-bold uppercase tracking-wider mb-3">
+                            <Sparkles class="w-3.5 h-3.5" />
+                            <span>Inisiatif & Aksi Nyata</span>
+                        </div>
+                        <h2 class="font-fraunces font-bold text-[#2c3821] text-3xl sm:text-4xl leading-[1.08]">
+                            Program Kerja Utama
+                        </h2>
+                        <p class="text-[#5a5040] mt-3 text-sm sm:text-base leading-relaxed">
+                            Rangkaian program unggulan berkelanjutan yang mengintegrasikan edukasi, pemberdayaan ekonomi warga, dan aksi kepedulian lingkungan.
+                        </p>
+                    </div>
+
+                    <!-- Program Category Filter Tabs -->
+                    <div class="flex items-center gap-2 p-1.5 bg-[#f6f1e2] rounded-full border border-[#2b2417]/14 shrink-0 overflow-x-auto">
+                        <button
+                            @click="activeTab = 'pendidikan'"
+                            class="px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap"
+                            :class="[
+                                activeTab === 'pendidikan'
+                                    ? 'bg-[#2c3821] text-[#fbf8ef] shadow-xs'
+                                    : 'text-[#5a5040] hover:text-[#2c3821]'
+                            ]"
+                        >
+                            Edukasi & Literacy
+                        </button>
+
+                        <button
+                            @click="activeTab = 'ekonomi'"
+                            class="px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap"
+                            :class="[
+                                activeTab === 'ekonomi'
+                                    ? 'bg-[#2c3821] text-[#fbf8ef] shadow-xs'
+                                    : 'text-[#5a5040] hover:text-[#2c3821]'
+                            ]"
+                        >
+                            Ekonomi Sirkular
+                        </button>
+
+                        <button
+                            @click="activeTab = 'humas'"
+                            class="px-4 py-2 rounded-full text-xs font-bold transition-all cursor-pointer whitespace-nowrap"
+                            :class="[
+                                activeTab === 'humas'
+                                    ? 'bg-[#2c3821] text-[#fbf8ef] shadow-xs'
+                                    : 'text-[#5a5040] hover:text-[#2c3821]'
+                            ]"
+                        >
+                            Humas & Kemitraan
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tab 1: Pendidikan & Edukasi -->
+                <div v-if="activeTab === 'pendidikan'" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    
+                    <div class="bg-white rounded-2xl p-6 border border-[#2b2417]/14 shadow-2xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-[#dce6c8] text-[#2c3821]">
+                                    Rutin Bulanan
+                                </span>
+                                <GraduationCap class="w-5 h-5 text-[#c1852c]" />
+                            </div>
+                            <h3 class="font-fraunces font-bold text-lg text-[#2c3821]">
+                                Edukasi Pemilahan Sampah Dari Rumah
+                            </h3>
+                            <p class="text-xs text-[#54493a] leading-relaxed">
+                                Sosialisasi dan edukasi praktis bagi warga tentang cara memisahkan sampah organik, anorganik layak daur ulang, dan residu sejak dari dapur rumah.
+                            </p>
+                        </div>
+                        <div class="pt-4 mt-4 border-t border-[#2b2417]/10 flex items-center justify-between text-xs text-[#6b6150]">
+                            <span>Sasaran: Ibu PKK & Warga RT/RW</span>
+                            <CheckCircle2 class="w-4 h-4 text-emerald-600" />
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-6 border border-[#2b2417]/14 shadow-2xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-[#dce6c8] text-[#2c3821]">
+                                    Pelatihan Berkala
+                                </span>
+                                <Sparkles class="w-5 h-5 text-[#c1852c]" />
+                            </div>
+                            <h3 class="font-fraunces font-bold text-lg text-[#2c3821]">
+                                Workshop Ecobrick & Kerajinan Plastik
+                            </h3>
+                            <p class="text-xs text-[#54493a] leading-relaxed">
+                                Pelatihan membuat ecobrick padat dari kantong/kemasan plastik tak terurai untuk dimanfaatkan menjadi mebel sederhana dan elemen konstruksi taman.
+                            </p>
+                        </div>
+                        <div class="pt-4 mt-4 border-t border-[#2b2417]/10 flex items-center justify-between text-xs text-[#6b6150]">
+                            <span>Sasaran: Pemuda & Komunitas</span>
+                            <CheckCircle2 class="w-4 h-4 text-emerald-600" />
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-6 border border-[#2b2417]/14 shadow-2xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-[#dce6c8] text-[#2c3821]">
+                                    Kampanye Publik
+                                </span>
+                                <BookOpen class="w-5 h-5 text-[#c1852c]" />
+                            </div>
+                            <h3 class="font-fraunces font-bold text-lg text-[#2c3821]">
+                                Gerakan Sustainable Living Indramayu
+                            </h3>
+                            <p class="text-xs text-[#54493a] leading-relaxed">
+                                Kampanye terbuka pengurangan penggunaan kantong plastik sekali pakai, membawa botol minum sendiri, serta pembagian kantong belanja kain ramah lingkungan.
+                            </p>
+                        </div>
+                        <div class="pt-4 mt-4 border-t border-[#2b2417]/10 flex items-center justify-between text-xs text-[#6b6150]">
+                            <span>Sasaran: Pasar & Sekolah</span>
+                            <CheckCircle2 class="w-4 h-4 text-emerald-600" />
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Tab 2: Ekonomi Sirkular -->
+                <div v-if="activeTab === 'ekonomi'" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    
+                    <div class="bg-white rounded-2xl p-6 border border-[#2b2417]/14 shadow-2xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-[#c1852c] text-white">
+                                    Program Unggulan
+                                </span>
+                                <Recycle class="w-5 h-5 text-[#c1852c]" />
+                            </div>
+                            <h3 class="font-fraunces font-bold text-lg text-[#2c3821]">
+                                Sodaqoh Sampah Anorganik
+                            </h3>
+                            <p class="text-xs text-[#54493a] leading-relaxed">
+                                Penimbangan rutin sampah botol, kardus, dan plastik dari warga. Hasil penjualan disalurkan kembali untuk dana operasional sosial dan kas lingkungan.
+                            </p>
+                        </div>
+                        <div class="pt-4 mt-4 border-t border-[#2b2417]/10 flex items-center justify-between text-xs text-[#6b6150]">
+                            <span>Status: Penimbangan Tiap Bulan</span>
+                            <CheckCircle2 class="w-4 h-4 text-emerald-600" />
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-6 border border-[#2b2417]/14 shadow-2xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-[#c1852c] text-white">
+                                    Produk Inovasi
+                                </span>
+                                <ShoppingBag class="w-5 h-5 text-[#c1852c]" />
+                            </div>
+                            <h3 class="font-fraunces font-bold text-lg text-[#2c3821]">
+                                Olahan Minyak Jelantah Jadi Sabun
+                            </h3>
+                            <p class="text-xs text-[#54493a] leading-relaxed">
+                                Penampungan limbah minyak goreng bekas dari dapur rumah tangga warga, diproses secara aman menjadi sabun padat alami untuk cuci dan pembersih.
+                            </p>
+                        </div>
+                        <div class="pt-4 mt-4 border-t border-[#2b2417]/10 flex items-center justify-between text-xs text-[#6b6150]">
+                            <span>Status: Produk Berizin & Siap Jual</span>
+                            <CheckCircle2 class="w-4 h-4 text-emerald-600" />
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-6 border border-[#2b2417]/14 shadow-2xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-[#c1852c] text-white">
+                                    Pupuk & Eco-Enzyme
+                                </span>
+                                <Leaf class="w-5 h-5 text-[#c1852c]" />
+                            </div>
+                            <h3 class="font-fraunces font-bold text-lg text-[#2c3821]">
+                                Fermentasi Eco-Enzyme & Kompos
+                            </h3>
+                            <p class="text-xs text-[#54493a] leading-relaxed">
+                                Pengolahan sisa kulit buah dan sayuran dapur menjadi larutan eco-enzyme serbaguna serta pembuatan kompos organik untuk tanaman pekarangan.
+                            </p>
+                        </div>
+                        <div class="pt-4 mt-4 border-t border-[#2b2417]/10 flex items-center justify-between text-xs text-[#6b6150]">
+                            <span>Status: Produksi Mandiri Warga</span>
+                            <CheckCircle2 class="w-4 h-4 text-emerald-600" />
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Tab 3: Humas & Kemitraan -->
+                <div v-if="activeTab === 'humas'" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    
+                    <div class="bg-white rounded-2xl p-6 border border-[#2b2417]/14 shadow-2xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-[#4c5c31] text-white">
+                                    Aksi Lapangan
+                                </span>
+                                <Users class="w-5 h-5 text-[#c1852c]" />
+                            </div>
+                            <h3 class="font-fraunces font-bold text-lg text-[#2c3821]">
+                                Clean-Up Pesisir & Fasilitas Desa
+                            </h3>
+                            <p class="text-xs text-[#54493a] leading-relaxed">
+                                Aksi gotong royong pembersihan sampah anorganik di kawasan pesisir pantai Indramayu dan tempat umum bekerjasama dengan karang taruna setempat.
+                            </p>
+                        </div>
+                        <div class="pt-4 mt-4 border-t border-[#2b2417]/10 flex items-center justify-between text-xs text-[#6b6150]">
+                            <span>Mitra: Pemda & Karang Taruna</span>
+                            <CheckCircle2 class="w-4 h-4 text-emerald-600" />
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-6 border border-[#2b2417]/14 shadow-2xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-[#4c5c31] text-white">
+                                    Kolaborasi KKN
+                                </span>
+                                <HeartHandshake class="w-5 h-5 text-[#c1852c]" />
+                            </div>
+                            <h3 class="font-fraunces font-bold text-lg text-[#2c3821]">
+                                Pendampingan Mahasiswa KKN
+                            </h3>
+                            <p class="text-xs text-[#54493a] leading-relaxed">
+                                Menjadi mitra pendamping bagi mahasiswa KKN dari berbagai perguruan tinggi dalam merealisasikan program kerja inovasi desa hijau dan bank sampah.
+                            </p>
+                        </div>
+                        <div class="pt-4 mt-4 border-t border-[#2b2417]/10 flex items-center justify-between text-xs text-[#6b6150]">
+                            <span>Mitra: Universitas / Perguruan Tinggi</span>
+                            <CheckCircle2 class="w-4 h-4 text-emerald-600" />
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl p-6 border border-[#2b2417]/14 shadow-2xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between">
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="text-[10px] font-bold uppercase tracking-wider px-3 py-1 rounded-full bg-[#4c5c31] text-white">
+                                    Pemberdayaan
+                                </span>
+                                <Briefcase class="w-5 h-5 text-[#c1852c]" />
+                            </div>
+                            <h3 class="font-fraunces font-bold text-lg text-[#2c3821]">
+                                Kemitraan UMKM Daur Ulang
+                            </h3>
+                            <p class="text-xs text-[#54493a] leading-relaxed">
+                                Membuka akses pemasaran produk hasil olahan warga (sabun jelantah, kerajinan ecobrick, pupuk) serta menjalin kerjasama dengan pembeli bahan baku daur ulang.
+                            </p>
+                        </div>
+                        <div class="pt-4 mt-4 border-t border-[#2b2417]/10 flex items-center justify-between text-xs text-[#6b6150]">
+                            <span>Mitra: Pelaku Usaha & Pasar Produk</span>
+                            <CheckCircle2 class="w-4 h-4 text-emerald-600" />
+                        </div>
+                    </div>
+
+                </div>
+
             </div>
         </section>
 

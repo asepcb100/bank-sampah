@@ -6,18 +6,29 @@ use App\Http\Controllers\Controller;
 use App\Models\Contact;
 use App\Models\Message;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
 
 class ContactController extends Controller
 {
     /**
-     * Display a listing of contacts and messages.
+     * Display a listing of contacts.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Inertia::render('admin/Kontak', [
-            'contacts' => Contact::latest()->get(),
-            'messages' => Message::latest()->get(),
+        $query = Contact::query();
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%")
+                  ->orWhere('role', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%")
+                  ->orWhere('address', 'like', "%{$search}%");
+            });
+        }
+
+        return view('admin.kontak.index', [
+            'contacts' => $query->latest()->paginate(10)->withQueryString(),
         ]);
     }
 
@@ -26,7 +37,7 @@ class ContactController extends Controller
      */
     public function create()
     {
-        return Inertia::render('admin/kontak/Create');
+        return view('admin.kontak.create');
     }
 
     /**
@@ -64,7 +75,7 @@ class ContactController extends Controller
     {
         $contact = Contact::findOrFail($id);
 
-        return Inertia::render('admin/kontak/Edit', [
+        return view('admin.kontak.edit', [
             'contact' => $contact,
         ]);
     }

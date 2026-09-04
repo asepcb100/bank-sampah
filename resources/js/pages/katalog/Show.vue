@@ -50,11 +50,23 @@ const props = defineProps<{
     related?: ProductItem[];
 }>();
 
-const productImages = computed(() => {
-    if (props.product.images && props.product.images.length > 0) {
-        return props.product.images.map(img => img.image_url);
+function formatImageUrl(url: string | null | undefined, fallback: string): string {
+    if (!url) return fallback;
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:') || url.startsWith('blob:')) {
+        return url;
     }
-    return [props.product.image_url || 'https://images.unsplash.com/photo-1607006482602-765180037159?q=80&w=800&auto=format&fit=crop'];
+    if (!url.startsWith('/')) {
+        return '/' + url;
+    }
+    return url;
+}
+
+const productImages = computed(() => {
+    const fallback = 'https://images.unsplash.com/photo-1607006482602-765180037159?q=80&w=800&auto=format&fit=crop';
+    if (props.product.images && props.product.images.length > 0) {
+        return props.product.images.map(img => formatImageUrl(img.image_url, fallback));
+    }
+    return [formatImageUrl(props.product.image_url, fallback)];
 });
 
 const activeImageIndex = ref(0);

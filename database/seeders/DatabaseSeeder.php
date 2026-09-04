@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             ProductSeeder::class,
             GallerySeeder::class,
             MessageSeeder::class,
+            LandingContentSeeder::class,
         ]);
     }
 }

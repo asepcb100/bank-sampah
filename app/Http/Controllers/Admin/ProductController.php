@@ -9,14 +9,28 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Inertia\Inertia;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return Inertia::render('admin/Katalog', [
-            'products' => Product::with(['category', 'contact', 'images'])->latest()->get(),
+        $query = Product::with(['category', 'contact', 'images']);
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%")
+                  ->orWhere('price_text', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->input('category_id'));
+        }
+
+        return view('admin.katalog.index', [
+            'products' => $query->latest()->paginate(10)->withQueryString(),
             'categories' => Category::where('type', 'katalog')->orWhere('type', 'semua')->get(),
             'contacts' => Contact::where('is_active', true)->get(),
         ]);
@@ -24,7 +38,7 @@ class ProductController extends Controller
 
     public function create()
     {
-        return Inertia::render('admin/katalog/Create', [
+        return view('admin.katalog.create', [
             'categories' => Category::where('type', 'katalog')->orWhere('type', 'semua')->get(),
             'contacts' => Contact::where('is_active', true)->get(),
         ]);
@@ -40,8 +54,8 @@ class ProductController extends Controller
             'stock' => 'required|integer|min:0',
             'description' => 'nullable|string',
             'is_available' => 'nullable',
-            'image_url' => 'nullable|string',
             'photos' => 'nullable|array',
+            'photos.*' => 'nullable|file|image|max:5120',
         ]);
 
         $baseSlug = Str::slug($validated['title']) ?: 'produk-' . time();
@@ -52,12 +66,6 @@ class ProductController extends Controller
             $count++;
         }
 
-        $defaultImage = 'https://images.unsplash.com/photo-1607006482602-765180037159?q=80&w=800&auto=format&fit=crop';
-        $primaryImageUrl = $validated['image_url'] ?? $defaultImage;
-        if (str_starts_with($primaryImageUrl, 'blob:')) {
-            $primaryImageUrl = $defaultImage;
-        }
-
         $product = Product::create([
             'title' => $validated['title'],
             'slug' => $slug,
@@ -66,25 +74,22 @@ class ProductController extends Controller
             'price_text' => $validated['price_text'],
             'stock' => $validated['stock'],
             'description' => $validated['description'] ?? null,
-            'image_url' => $primaryImageUrl,
             'is_available' => filter_var($request->is_available ?? true, FILTER_VALIDATE_BOOLEAN),
         ]);
 
-        if ($request->has('photos') && is_array($request->photos)) {
-            foreach ($request->photos as $idx => $photoData) {
-                $photoUrl = $photoData['url'] ?? null;
-                $isPrimary = filter_var($photoData['is_primary'] ?? false, FILTER_VALIDATE_BOOLEAN) || ($idx === 0);
+        $photos = $request->file('photos', []);
+        $primaryIndex = (int) $request->input('primary_upload_index', 0);
+        if ($primaryIndex < 0) $primaryIndex = 0;
 
-                if (isset($photoData['file']) && $request->hasFile("photos.{$idx}.file")) {
-                    $path = $request->file("photos.{$idx}.file")->store('products', 'public');
-                    $photoUrl = '/storage/' . $path;
-                } elseif (!$photoUrl || str_starts_with($photoUrl, 'blob:')) {
-                    $photoUrl = $defaultImage;
+        if (is_array($photos) && count($photos) > 0) {
+            foreach ($photos as $idx => $file) {
+                if (!$file || !is_object($file) || method_exists($file, 'isValid') && !$file->isValid()) {
+                    continue;
                 }
 
-                if ($isPrimary) {
-                    $product->update(['image_url' => $photoUrl]);
-                }
+                $path = $file->store('products', 'public');
+                $photoUrl = '/storage/' . $path;
+                $isPrimary = ($idx === $primaryIndex);
 
                 ProductImage::create([
                     'product_id' => $product->id,
@@ -101,7 +106,7 @@ class ProductController extends Controller
     {
         $product = Product::with(['category', 'contact', 'images'])->findOrFail($id);
 
-        return Inertia::render('admin/katalog/Show', [
+        return view('admin.katalog.show', [
             'product' => $product,
         ]);
     }
@@ -110,7 +115,7 @@ class ProductController extends Controller
     {
         $product = Product::with(['category', 'contact', 'images'])->findOrFail($id);
 
-        return Inertia::render('admin/katalog/Edit', [
+        return view('admin.katalog.edit', [
             'product' => $product,
             'categories' => Category::where('type', 'katalog')->orWhere('type', 'semua')->get(),
             'contacts' => Contact::where('is_active', true)->get(),
@@ -129,8 +134,8 @@ class ProductController extends Controller
             'stock' => 'required|integer|min:0',
             'description' => 'nullable|string',
             'is_available' => 'nullable',
-            'image_url' => 'nullable|string',
             'photos' => 'nullable|array',
+            'photos.*' => 'nullable|file|image|max:5120',
         ]);
 
         $slug = $product->slug;
@@ -144,12 +149,6 @@ class ProductController extends Controller
             }
         }
 
-        $defaultImage = $product->image_url;
-        $primaryImageUrl = $validated['image_url'] ?? $defaultImage;
-        if (str_starts_with($primaryImageUrl, 'blob:')) {
-            $primaryImageUrl = $defaultImage;
-        }
-
         $product->update([
             'title' => $validated['title'],
             'slug' => $slug,
@@ -158,26 +157,39 @@ class ProductController extends Controller
             'price_text' => $validated['price_text'],
             'stock' => $validated['stock'],
             'description' => $validated['description'] ?? null,
-            'image_url' => $primaryImageUrl,
             'is_available' => filter_var($request->is_available ?? true, FILTER_VALIDATE_BOOLEAN),
         ]);
 
-        if ($request->has('photos') && is_array($request->photos)) {
-            $product->images()->delete();
+        // Handle removing specific existing images requested by user
+        if ($request->has('remove_images') && is_array($request->remove_images)) {
+            ProductImage::whereIn('id', $request->remove_images)->where('product_id', $product->id)->delete();
+        }
 
-            foreach ($request->photos as $idx => $photoData) {
-                $photoUrl = $photoData['url'] ?? null;
-                $isPrimary = filter_var($photoData['is_primary'] ?? false, FILTER_VALIDATE_BOOLEAN) || ($idx === 0);
+        // Handle setting specific existing image as primary
+        if ($request->filled('set_primary_image_id')) {
+            $primaryImg = ProductImage::where('product_id', $product->id)->where('id', $request->set_primary_image_id)->first();
+            if ($primaryImg) {
+                ProductImage::where('product_id', $product->id)->update(['is_primary' => false]);
+                $primaryImg->update(['is_primary' => true]);
+            }
+        }
 
-                if (isset($photoData['file']) && $request->hasFile("photos.{$idx}.file")) {
-                    $path = $request->file("photos.{$idx}.file")->store('products', 'public');
-                    $photoUrl = '/storage/' . $path;
-                } elseif (!$photoUrl || str_starts_with($photoUrl, 'blob:')) {
-                    $photoUrl = $defaultImage;
+        // Append new uploaded photos
+        $photos = $request->file('photos', []);
+        $primaryUploadIndex = $request->has('primary_upload_index') ? (int) $request->input('primary_upload_index') : -1;
+
+        if (is_array($photos) && count($photos) > 0) {
+            foreach ($photos as $idx => $file) {
+                if (!$file || !is_object($file) || method_exists($file, 'isValid') && !$file->isValid()) {
+                    continue;
                 }
 
+                $path = $file->store('products', 'public');
+                $photoUrl = '/storage/' . $path;
+                $isPrimary = ($idx === $primaryUploadIndex);
+
                 if ($isPrimary) {
-                    $product->update(['image_url' => $photoUrl]);
+                    ProductImage::where('product_id', $product->id)->update(['is_primary' => false]);
                 }
 
                 ProductImage::create([
@@ -185,6 +197,14 @@ class ProductController extends Controller
                     'image_url' => $photoUrl,
                     'is_primary' => $isPrimary,
                 ]);
+            }
+        }
+
+        // Ensure at least 1 image is primary if images exist
+        if ($product->images()->count() > 0 && !$product->images()->where('is_primary', true)->exists()) {
+            $firstImg = $product->images()->first();
+            if ($firstImg) {
+                $firstImg->update(['is_primary' => true]);
             }
         }
 

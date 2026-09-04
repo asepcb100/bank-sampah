@@ -16,7 +16,6 @@ class Gallery extends Model
         'title',
         'slug',
         'description',
-        'image_url',
         'location',
         'event_date',
         'is_published',
@@ -26,6 +25,15 @@ class Gallery extends Model
         'event_date' => 'date',
         'is_published' => 'boolean',
     ];
+
+    /**
+     * Accessor untuk URL gambar utama (Primary Image) dari relasi GalleryImage
+     */
+    public function getPrimaryImageUrlAttribute(): string
+    {
+        $primary = $this->images->firstWhere('is_primary', true) ?? $this->images->first();
+        return $primary ? $primary->image_url : 'https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?q=80&w=800&auto=format&fit=crop';
+    }
 
     /**
      * Relasi ke Kategori

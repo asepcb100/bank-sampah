@@ -50,13 +50,25 @@ const props = defineProps<{
 const activeCategory = ref<string>('Semua');
 const searchQuery = ref<string>('');
 
+function formatImageUrl(url: string | null | undefined, fallback: string): string {
+    if (!url) return fallback;
+    if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:') || url.startsWith('blob:')) {
+        return url;
+    }
+    if (!url.startsWith('/')) {
+        return '/' + url;
+    }
+    return url;
+}
+
 function getPrimaryImage(item: any): string {
+    const fallback = 'https://images.unsplash.com/photo-1607006482602-765180037159?q=80&w=800&auto=format&fit=crop';
     if (item?.images && item.images.length > 0) {
         const primary = item.images.find((img: any) => img.is_primary);
-        if (primary && primary.image_url) return primary.image_url;
-        return item.images[0].image_url;
+        if (primary && primary.image_url) return formatImageUrl(primary.image_url, fallback);
+        if (item.images[0]?.image_url) return formatImageUrl(item.images[0].image_url, fallback);
     }
-    return item?.image_url || 'https://images.unsplash.com/photo-1607006482602-765180037159?q=80&w=800&auto=format&fit=crop';
+    return formatImageUrl(item?.image_url, fallback);
 }
 
 const defaultProducts: ProductItem[] = [
