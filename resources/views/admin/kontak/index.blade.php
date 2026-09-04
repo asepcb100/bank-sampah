@@ -102,7 +102,7 @@
                                             Edit
                                         </a>
                                         <button type="button" 
-                                                onclick="openDeleteContactModal({{ $contact->id }}, '{{ addslashes($contact->name) }}')" 
+                                                onclick="openDeleteModal('{{ route('admin.kontak.destroy', $contact->id) }}', '{{ addslashes($contact->name) }}')" 
                                                 class="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-rose-50 text-rose-600 hover:bg-rose-100 transition-colors cursor-pointer">
                                             Hapus
                                         </button>
@@ -121,61 +121,4 @@
 
 </div>
 
-<!-- DELETE CONTACT MODAL (THEME STYLED) -->
-<div id="deleteContactModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-[#141008]/75 backdrop-blur-xs transition-all">
-    <div class="relative bg-[#fbf8ef] border border-[#2b2417]/16 rounded-3xl p-6 sm:p-8 max-w-sm w-full shadow-2xl space-y-5 text-center">
-        <div class="w-14 h-14 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto shadow-xs border border-rose-200">
-            <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M3 6h18"/>
-                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
-            </svg>
-        </div>
-
-        <div class="space-y-1.5">
-            <h3 class="font-fraunces font-bold text-xl text-[#2c3821]">Konfirmasi Hapus Kontak</h3>
-            <p class="text-xs text-[#6b6150] leading-relaxed font-medium">
-                Apakah Anda yakin ingin menghapus kontak <span id="delete_contact_name_display" class="font-bold text-[#2c3821]"></span>?
-            </p>
-        </div>
-
-        <div class="flex items-center gap-3 pt-2">
-            <button type="button" onclick="closeDeleteContactModal()" class="flex-1 py-2.5 px-4 rounded-full border border-[#2b2417]/16 text-xs font-bold text-[#2b2417] hover:bg-[#f6f1e2] cursor-pointer">
-                Batal
-            </button>
-
-            <form id="deleteContactForm" method="POST" action="" class="flex-1">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="w-full py-2.5 px-4 rounded-full bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-xs cursor-pointer">
-                    Ya, Hapus
-                </button>
-            </form>
-        </div>
-    </div>
-</div>
-
-<script>
-function openDeleteContactModal(id, name) {
-    const modal = document.getElementById('deleteContactModal');
-    const form = document.getElementById('deleteContactForm');
-    
-    if (form) form.action = `/admin/kontak/${id}`;
-    document.getElementById('delete_contact_name_display').textContent = name;
-
-    if (modal) {
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        document.body.style.overflow = 'hidden';
-    }
-}
-
-function closeDeleteContactModal() {
-    const modal = document.getElementById('deleteContactModal');
-    if (modal) {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-        document.body.style.overflow = '';
-    }
-}
-</script>
 @endsection

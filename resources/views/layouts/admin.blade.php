@@ -151,78 +151,43 @@
 
         </div>
 
-        <!-- Sidebar Bottom Area: Platform External & User Card -->
-        <div class="p-3 border-t border-slate-100 space-y-2 bg-white">
+        <!-- Sidebar Bottom Area: Static Profile -->
+        <div class="p-3 border-t border-slate-100 bg-white mt-auto">
             
-            <!-- Group Section 3: External Platform Link -->
-            <div class="space-y-0.5">
-                <div class="sidebar-group-title px-2.5 py-0.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider">
-                    Platform
+            <a href="{{ route('home') }}" 
+               target="_blank" 
+               title="Beranda Utama Web"
+               class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors border border-transparent mb-2">
+                <span class="shrink-0 text-slate-500">
+                    <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                </span>
+                <span class="sidebar-text-item truncate text-xs">Beranda Utama Web</span>
+            </a>
+
+            <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80">
+                <div class="flex items-center gap-2.5 mb-3">
+                    <div class="w-9 h-9 rounded-xl bg-[#2c3821] text-[#fbf8ef] flex items-center justify-center font-bold text-xs shrink-0 font-fraunces shadow-2xs">
+                        {{ strtoupper(substr(auth()->user()->name ?? 'AS', 0, 2)) }}
+                    </div>
+                    <div id="sidebarUserText" class="min-w-0">
+                        <div class="text-xs font-bold text-slate-800 truncate leading-tight">{{ auth()->user()->name ?? 'Admin' }}</div>
+                        <div class="text-[10px] text-slate-500 truncate leading-tight">{{ auth()->user()->email ?? '' }}</div>
+                    </div>
                 </div>
-
-                <a href="{{ route('home') }}" 
-                   target="_blank" 
-                   title="Beranda Utama Web"
-                   class="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-semibold text-slate-700 hover:bg-slate-50 hover:text-slate-900 transition-colors border border-transparent">
-                    <span class="shrink-0 text-slate-500">
-                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                    </span>
-                    <span class="sidebar-text-item truncate text-xs">Beranda Utama Web</span>
-                </a>
-            </div>
-
-            <!-- User Profile Box (Bottom Sidebar Card) -->
-            <div class="relative">
-                <button type="button" 
-                        onclick="toggleSidebarUserDropdown()" 
-                        id="sidebarUserCardBtn"
-                        class="w-full flex items-center justify-between p-2 rounded-xl border border-slate-200/80 bg-slate-50/60 hover:bg-slate-100/80 transition-colors cursor-pointer focus:outline-none">
-                    <div class="flex items-center gap-2.5 min-w-0">
-                        <div class="w-8 h-8 rounded-lg bg-[#2c3821] text-[#fbf8ef] flex items-center justify-center font-bold text-xs shrink-0 font-fraunces shadow-2xs">
-                            {{ strtoupper(substr(auth()->user()->name ?? 'AS', 0, 2)) }}
-                        </div>
-                        <div id="sidebarUserText" class="flex flex-col text-left min-w-0">
-                            <span class="text-xs font-bold text-slate-800 truncate leading-tight">
-                                {{ auth()->user()->name ?? 'Admin Bank Sampah' }}
-                            </span>
-                            <span class="text-[10px] text-slate-500 truncate leading-tight">
-                                {{ auth()->user()->email ?? 'admin@bumi.org' }}
-                            </span>
-                        </div>
-                    </div>
-                    <svg class="sidebar-text-item w-4 h-4 text-slate-400 shrink-0 ml-1" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M7 15l5 5 5-5M7 9l5-5 5 5"/>
-                    </svg>
-                </button>
-
-                <!-- Sidebar User Dropdown Menu Box -->
-                <div id="sidebarUserDropdown" class="hidden absolute left-0 bottom-full mb-2 w-full min-w-[200px] bg-white border border-slate-200 rounded-2xl shadow-xl p-1.5 z-50 space-y-1">
-                    <div class="px-3 py-2 border-b border-slate-100 mb-1">
-                        <p class="text-xs font-bold text-slate-800 truncate">{{ auth()->user()->name ?? 'Admin Bank Sampah' }}</p>
-                        <p class="text-[10px] text-slate-500 truncate">{{ auth()->user()->email ?? 'admin@bumi.org' }}</p>
-                    </div>
-
-                    <a href="{{ route('profile.edit') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors">
-                        <svg class="w-4 h-4 text-[#c1852c]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
-                            <circle cx="12" cy="7" r="4"/>
-                        </svg>
-                        <span>Profil Saya</span>
+                <div class="flex items-center gap-2">
+                    <a href="{{ route('profile.edit') }}" class="flex-1 flex items-center justify-center gap-1.5 py-1.5 rounded-lg bg-white border border-slate-200 text-[10px] font-bold text-slate-600 hover:bg-slate-50 transition-colors">
+                        <svg class="w-3 h-3 text-[#c1852c]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        <span class="sidebar-text-item">Profil</span>
                     </a>
-
-                    <button type="button" 
-                            onclick="closeSidebarUserDropdown(); openLogoutModal();" 
-                            class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer text-left">
-                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-                            <polyline points="16 17 21 12 16 7"/>
-                            <line x1="21" y1="12" x2="9" y2="12"/>
-                        </svg>
-                        <span>Keluar</span>
-                    </button>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg bg-white border border-slate-200 text-[10px] font-bold text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer">
+                            <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                            <span class="sidebar-text-item">Keluar</span>
+                        </button>
+                    </form>
                 </div>
             </div>
-
         </div>
 
     </aside>
@@ -362,6 +327,36 @@
     </div>
 </div>
 
+<!-- SHARED DELETE CONFIRMATION MODAL -->
+<div id="deleteModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs transition-all">
+    <div class="relative bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 max-w-sm w-full shadow-2xl space-y-5 text-center transform transition-all">
+        <div class="w-14 h-14 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto shadow-xs border border-rose-200">
+            <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                <line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/>
+            </svg>
+        </div>
+        <div class="space-y-1.5">
+            <h3 class="font-bold text-xl text-slate-800">Hapus Data</h3>
+            <p class="text-xs text-slate-500 leading-relaxed font-medium">
+                Apakah Anda yakin ingin menghapus <span id="deleteItemName" class="font-bold text-slate-700"></span>? Tindakan ini tidak dapat dibatalkan.
+            </p>
+        </div>
+        <div class="flex items-center gap-3 pt-2">
+            <button type="button" onclick="closeDeleteModal()" class="flex-1 py-2.5 px-4 rounded-full border border-slate-200 text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors cursor-pointer">
+                Batal
+            </button>
+            <form id="deleteForm" method="POST" action="" class="flex-1">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="w-full py-2.5 px-4 rounded-full bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-xs transition-all cursor-pointer">
+                    Ya, Hapus
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
 // INITIALIZE SIDEBAR COLLAPSE STATE ON LOAD
 document.addEventListener('DOMContentLoaded', function() {
@@ -403,7 +398,6 @@ function applySidebarState(collapsed) {
     const textItems = document.querySelectorAll('.sidebar-text-item');
     const groupTitles = document.querySelectorAll('.sidebar-group-title');
     const brandText = document.getElementById('sidebarBrandText');
-    const userText = document.getElementById('sidebarUserText');
 
     if (!sidebar) return;
 
@@ -413,14 +407,12 @@ function applySidebarState(collapsed) {
         textItems.forEach(el => el.classList.add('hidden'));
         groupTitles.forEach(el => el.classList.add('hidden'));
         if (brandText) brandText.classList.add('hidden');
-        if (userText) userText.classList.add('hidden');
     } else {
         sidebar.classList.remove('w-20');
         sidebar.classList.add('w-64');
         textItems.forEach(el => el.classList.remove('hidden'));
         groupTitles.forEach(el => el.classList.remove('hidden'));
         if (brandText) brandText.classList.remove('hidden');
-        if (userText) userText.classList.remove('hidden');
     }
 }
 
@@ -433,30 +425,6 @@ function toggleUserDropdown() {
 
 function closeUserDropdown() {
     const dropdown = document.getElementById('adminUserDropdown');
-    if (dropdown) {
-        dropdown.classList.add('hidden');
-    }
-}
-
-function toggleSidebarUserDropdown() {
-    const dropdown = document.getElementById('sidebarUserDropdown');
-    const sidebar = document.getElementById('adminSidebar');
-    if (!dropdown || !sidebar) return;
-
-    const isCollapsed = sidebar.classList.contains('w-20');
-    if (isCollapsed) {
-        dropdown.classList.remove('bottom-full', 'left-0', 'mb-2', 'w-full');
-        dropdown.classList.add('left-full', 'bottom-1', 'ml-3', 'w-52');
-    } else {
-        dropdown.classList.remove('left-full', 'bottom-1', 'ml-3', 'w-52');
-        dropdown.classList.add('bottom-full', 'left-0', 'mb-2', 'w-full');
-    }
-
-    dropdown.classList.toggle('hidden');
-}
-
-function closeSidebarUserDropdown() {
-    const dropdown = document.getElementById('sidebarUserDropdown');
     if (dropdown) {
         dropdown.classList.add('hidden');
     }
@@ -480,25 +448,41 @@ function closeLogoutModal() {
     }
 }
 
+function openDeleteModal(url, name) {
+    const modal = document.getElementById('deleteModal');
+    const form = document.getElementById('deleteForm');
+    const nameEl = document.getElementById('deleteItemName');
+    if (!modal || !form) return;
+    form.action = url;
+    if (nameEl) nameEl.textContent = name;
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDeleteModal() {
+    const modal = document.getElementById('deleteModal');
+    if (modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = '';
+    }
+}
+
 document.addEventListener('click', function(e) {
     const topUserBtn = document.getElementById('topUserDropdownBtn');
-    const sidebarUserBtn = document.getElementById('sidebarUserCardBtn');
     const topUserDrop = document.getElementById('adminUserDropdown');
-    const sidebarUserDrop = document.getElementById('sidebarUserDropdown');
 
     if (topUserDrop && topUserBtn && !topUserBtn.contains(e.target) && !topUserDrop.contains(e.target)) {
         topUserDrop.classList.add('hidden');
-    }
-    if (sidebarUserDrop && sidebarUserBtn && !sidebarUserBtn.contains(e.target) && !sidebarUserDrop.contains(e.target)) {
-        sidebarUserDrop.classList.add('hidden');
     }
 });
 
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         closeUserDropdown();
-        closeSidebarUserDropdown();
         closeLogoutModal();
+        closeDeleteModal();
         closeMobileSidebar();
     }
 });

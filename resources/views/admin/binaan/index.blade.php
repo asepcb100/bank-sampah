@@ -121,7 +121,7 @@
                                         Edit
                                     </a>
                                     <button type="button" 
-                                            onclick="confirmDeleteBinaan({{ $item->id }}, '{{ addslashes($item->nama) }}')" 
+                                            onclick="openDeleteModal('{{ route('admin.binaan.destroy', $item->id) }}', '{{ addslashes($item->nama) }}')" 
                                             class="px-3 py-1.5 rounded-full border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 font-bold transition-all cursor-pointer">
                                         Hapus
                                     </button>
@@ -140,62 +140,4 @@
 
 </div>
 
-<!-- DELETE CONFIRMATION MODAL -->
-<div id="deleteBinaanModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-[#141008]/75 backdrop-blur-xs transition-all">
-    <div class="relative bg-[#fbf8ef] border border-[#2b2417]/16 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 text-center transform transition-all">
-        
-        <div class="w-14 h-14 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto shadow-xs border border-rose-200 text-2xl">
-            🗑️
-        </div>
-
-        <div class="space-y-1.5">
-            <h3 class="font-fraunces font-bold text-xl text-[#2c3821]">Konfirmasi Hapus Binaan</h3>
-            <p class="text-xs text-[#6b6150] leading-relaxed font-medium">
-                Apakah Anda yakin ingin menghapus kelompok binaan <strong id="deleteBinaanName" class="text-rose-700"></strong> beserta data pengurus & kontaknya? Tindakan ini tidak dapat dibatalkan.
-            </p>
-        </div>
-
-        <div class="flex items-center gap-3 pt-2">
-            <button type="button" onclick="closeDeleteBinaanModal()" class="flex-1 py-2.5 px-4 rounded-full border border-[#2b2417]/16 text-xs font-bold text-[#2b2417] hover:bg-[#f6f1e2] transition-colors cursor-pointer">
-                Batal
-            </button>
-
-            <form id="deleteBinaanForm" method="POST" action="" class="flex-1">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="w-full py-2.5 px-4 rounded-full bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-xs transition-all cursor-pointer">
-                    Ya, Hapus Data
-                </button>
-            </form>
-        </div>
-
-    </div>
-</div>
-
-@push('scripts')
-<script>
-function confirmDeleteBinaan(id, name) {
-    const modal = document.getElementById('deleteBinaanModal');
-    const form = document.getElementById('deleteBinaanForm');
-    const nameEl = document.getElementById('deleteBinaanName');
-    
-    if (modal && form && nameEl) {
-        nameEl.textContent = name;
-        form.action = `/admin/binaan/${id}`;
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        document.body.style.overflow = 'hidden';
-    }
-}
-
-function closeDeleteBinaanModal() {
-    const modal = document.getElementById('deleteBinaanModal');
-    if (modal) {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-        document.body.style.overflow = '';
-    }
-}
-</script>
-@endpush
 @endsection

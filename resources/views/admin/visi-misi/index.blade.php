@@ -106,7 +106,7 @@
                                     <a href="{{ route('admin.visi-misi.edit', $item->id) }}" title="Edit" class="px-3 py-1.5 rounded-full border border-[#c1852c]/30 bg-[#c1852c]/10 text-[#2c3821] hover:bg-[#c1852c]/20 font-bold transition-all">
                                         Edit
                                     </a>
-                                    <button type="button" onclick="confirmDeleteVisi({{ $item->id }}, '{{ addslashes($item->judul) }}')" class="px-3 py-1.5 rounded-full border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 font-bold transition-all cursor-pointer">
+                                    <button type="button" onclick="openDeleteModal('{{ route('admin.visi-misi.destroy', $item->id) }}', '{{ addslashes($item->judul) }}')" class="px-3 py-1.5 rounded-full border border-rose-200 bg-rose-50 text-rose-700 hover:bg-rose-100 font-bold transition-all cursor-pointer">
                                         Hapus
                                     </button>
                                 </div>
@@ -123,55 +123,4 @@
 
 </div>
 
-<!-- DELETE CONFIRMATION MODAL -->
-<div id="deleteVisiModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-[#141008]/75 backdrop-blur-xs transition-all">
-    <div class="relative bg-[#fbf8ef] border border-[#2b2417]/16 rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 text-center transform transition-all">
-        <div class="w-14 h-14 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mx-auto shadow-xs border border-rose-200 text-2xl">
-            🗑️
-        </div>
-        <div class="space-y-1.5">
-            <h3 class="font-fraunces font-bold text-xl text-[#2c3821]">Konfirmasi Hapus Visi/Misi</h3>
-            <p class="text-xs text-[#6b6150] leading-relaxed font-medium">
-                Apakah Anda yakin ingin menghapus visi/misi <strong id="deleteVisiName" class="text-rose-700"></strong>? Tindakan ini tidak dapat dibatalkan.
-            </p>
-        </div>
-        <div class="flex items-center gap-3 pt-2">
-            <button type="button" onclick="closeDeleteVisiModal()" class="flex-1 py-2.5 px-4 rounded-full border border-[#2b2417]/16 text-xs font-bold text-[#2b2417] hover:bg-[#f6f1e2] transition-colors cursor-pointer">
-                Batal
-            </button>
-            <form id="deleteVisiForm" method="POST" action="" class="flex-1">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="w-full py-2.5 px-4 rounded-full bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-xs transition-all cursor-pointer">
-                    Ya, Hapus Data
-                </button>
-            </form>
-        </div>
-    </div>
-</div>
-
-@push('scripts')
-<script>
-function confirmDeleteVisi(id, name) {
-    const modal = document.getElementById('deleteVisiModal');
-    const form = document.getElementById('deleteVisiForm');
-    const nameEl = document.getElementById('deleteVisiName');
-    if (modal && form && nameEl) {
-        nameEl.textContent = name;
-        form.action = `/admin/visi-misi/${id}`;
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        document.body.style.overflow = 'hidden';
-    }
-}
-function closeDeleteVisiModal() {
-    const modal = document.getElementById('deleteVisiModal');
-    if (modal) {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-        document.body.style.overflow = '';
-    }
-}
-</script>
-@endpush
 @endsection
